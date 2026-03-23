@@ -1,0 +1,43 @@
+name: azure-vm-lab CI/CD
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Récupère le code du repo
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Copie les fichiers app/ sur la VM via SSH
+      - name: Copy app files to VM
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VM_IP }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "app/"
+          target: "/home/adminuser/app"
+
+      # Se connecte à la VM et rebuild + redémarre le conteneur
+      - name: Build and restart Docker container
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VM_IP }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/adminuser/app/app
+            docker build -t vm-app:${{ github.sha }} .
+            docker stop vm-app || true
+            docker rm vm-app || true
+            docker run -d \
+              --name vm-app \
+              --restart always \
+              -p 80:80 \
+              vm-app:${{ github.sha }}
+            docker image prune -f
