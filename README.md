@@ -192,13 +192,13 @@ cd terraform && terraform destroy
 
 ## Points techniques notables
 
-user_data : Le script d'installation s'exécute automatiquement au premier démarrage de la VM — Docker est installé et le conteneur est lancé sans intervention manuelle. C'est l'équivalent d'un Ansible playbook simplifié pour un cas d'usage léger.
+user_data : Le script d'installation s'exécute automatiquement au premier démarrage de la VM  Docker est installé et le conteneur est lancé sans intervention manuelle. C'est l'équivalent d'un Ansible playbook simplifié pour un cas d'usage léger.
 
-Authentification SSH par clé: Aucun mot de passe n'est utilisé pour accéder à la VM — uniquement une clé SSH. Plus sécurisé et compatible avec les pipelines CI/CD automatisés.
+Authentification SSH par clé: Aucun mot de passe n'est utilisé pour accéder à la VM uniquement une clé SSH. Plus sécurisé et compatible avec les pipelines CI/CD automatisés.
 
-NSG : Le Network Security Group n'autorise que les ports 22 (SSH) et 80 (HTTP) — tous les autres ports sont bloqués par défaut. Principe du moindre privilège appliqué au réseau.
+NSG : Le Network Security Group n'autorise que les ports 22 (SSH) et 80 (HTTP)  tous les autres ports sont bloqués par défaut. Principe du moindre privilège appliqué au réseau.
 
-IP publique statique : L'IP ne change pas au redémarrage de la VM — les secrets GitHub `VM_IP` restent valides sans mise à jour manuelle.
+IP publique statique : L'IP ne change pas au redémarrage de la VM  les secrets GitHub `VM_IP` restent valides sans mise à jour manuelle.
 
 ---
 
@@ -208,7 +208,7 @@ IP publique statique : L'IP ne change pas au redémarrage de la VM — les secre
 - Remplacer le `user_data` par Ansible pour plus de flexibilité
 - Ajouter Watchtower pour les mises à jour automatiques des images Docker
 - Configurer un backend Terraform distant (Azure Storage) pour le tfstate en équipe
-- Ajouter une supervision avec **Uptime Kuma**
+- Ajouter une supervision avec Uptime Kuma
 
 ---
 
